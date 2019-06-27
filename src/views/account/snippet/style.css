@@ -1,0 +1,10 @@
+.wsl-snippet {
+  max-width: 100%;
+  margin-top: 20px;
+}
+
+.wsl-snippet-textarea {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+}
