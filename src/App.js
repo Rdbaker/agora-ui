@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { BrowserRouter, Route } from 'react-router-dom';
 
+import { AuthAPI } from 'api/auth';
 import { CurrentUser } from 'utils/contexts';
+import { EmailLogin, VerifyEmail, WeaslLogin } from 'views/login';
+import { DEBUG } from 'constants/resources';
+import { setMe } from 'modules/auth/actions';
 
 import Home from './views/home';
 import AccountHome from './views/account';
-import { EmailLogin, VerifyEmail, WeaslLogin } from 'views/login';
-import { DEBUG } from 'constants/resources';
 import './App.css';
+
 
 class App extends Component {
   constructor(props) {
@@ -15,7 +19,7 @@ class App extends Component {
 
     this.state = {
       currentUser: null,
-      waitingOnWeasl: false,
+      fetchMePending: true,
     };
   }
 
@@ -23,6 +27,35 @@ class App extends Component {
     if (!DEBUG) {
       this.mountDrift();
     }
+    this.fetchMe();
+  }
+
+  fetchMe = async () => {
+    AuthAPI.getMe()
+      .then(this.getMeSuccess)
+      .catch(this.getMeFailed);
+  }
+
+  getMeSuccess = async (res) => {
+    const { status } = res;
+
+    if (status !== 200) {
+      throw new Error()
+    }
+
+    const { data } = await res.json();
+
+    this.setState({
+      currentUser: data,
+      fetchMePending: false,
+    });
+    this.props.dispatcher.setMe({ user: data });
+  }
+
+  getMeFailed = async () => {
+    this.setState({
+      fetchMePending: false,
+    });
   }
 
   mountDrift = () => {
@@ -52,13 +85,16 @@ class App extends Component {
 
   makeLoginRequiredComponent(AuthedComponent) {
     const {
-      isLoggedIn,
       currentUser,
-      waitingOnWeasl,
+      fetchMePending,
     } = this.state;
 
     return () => {
-      if (isLoggedIn) {
+      if (fetchMePending) {
+        return <div>Loading...</div>;
+      }
+
+      if (!!currentUser) {
         global.drift && global.drift.on('ready', () => {
           drift.identify(currentUser.id, { ...currentUser });
         });
@@ -67,14 +103,9 @@ class App extends Component {
           scope.setUser(currentUser);
         });
 
-        return <AuthedComponent currentUser={currentUser} />;
+        return <AuthedComponent />;
       } else {
-        return <WeaslLogin onLogin={(user) => {
-          this.setState({
-            isLoggedIn: true,
-            currentUser: user,
-          })
-        }} waitingOnWeasl={waitingOnWeasl}/>;
+        return <EmailLogin />;
       }
     }
   }
@@ -89,7 +120,8 @@ class App extends Component {
       <BrowserRouter>
         <div className="App">
           <CurrentUser.Provider value={currentUser}>
-            <Route exact={true} path="/" render={this.makeLoginRequiredComponent(Home)} />
+            <Route exact={true} path="/" render={Home} />
+            <Route path="/home" render={this.makeLoginRequiredComponent(Home)} />
             <Route path="/login" component={EmailLogin}/>
             <Route path="/account" render={this.makeLoginRequiredComponent(AccountHome)} />
             <Route path="/verify-token/:token" render={() => <VerifyEmail checkLogin={this.checkLogin} />} />
@@ -101,4 +133,12 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = dispatch => ({
+  dispatcher: {
+    setMe: (payload) => dispatch(setMe(payload)),
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

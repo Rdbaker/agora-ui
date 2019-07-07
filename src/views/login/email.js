@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import { AuthAPI } from 'api/auth';
-
 import Header from 'components/Header';
+import { setToken } from 'utils/auth';
+import * as AuthActions from 'modules/auth/actions';
+
 import './style.css';
+
 
 class EmailLogin extends Component {
 
@@ -12,34 +16,30 @@ class EmailLogin extends Component {
 
     this.state = {
       emailInput: '',
-      emailSendPending: false,
-      emailSendFailed: false,
-      emailSendSuccess: false,
-      emailSendFailedReason: null,
+      passwordInput: '',
+      emailLoginPending: false,
+      emailLoginFailed: false,
     };
   }
 
-  setEmailSendPending = () => {
+  setEmailLoginPending = () => {
     this.setState({
-      emailSendPending: true,
-      emailSendSuccess: false,
-      emailSendFailed: false,
+      emailLoginPending: true,
+      emailLoginFailed: false,
     });
   }
 
-  setEmailSendSuccess = () => {
-    this.setState({
-      emailSendPending: false,
-      emailSendSuccess: true,
-      emailSendFailed: false,
-    });
+  onEmailLoginSuccess = async (res) => {
+    // TODO: redirect to home & store cookie
+    const { token } = await res.json();
+    this.props.dispatcher.setToken(token);
+    setToken(token);
   }
 
-  setEmailSendFailed = () => {
+  setEmailLoginFailed = () => {
     this.setState({
-      emailSendFailed: true,
-      emailSendSuccess: false,
-      emailSendPending: false,
+      emailLoginFailed: true,
+      emailLoginPending: false,
     });
   }
 
@@ -49,15 +49,21 @@ class EmailLogin extends Component {
     });
   }
 
+  onUpdatePassword = (e) => {
+    this.setState({
+      passwordInput: e.target.value,
+    });
+  }
+
   onSubmitEmail = async (e) => {
     e.preventDefault();
-    this.setEmailSendPending();
-    AuthAPI.sendLoginEmail(this.state.emailInput)
-      .then(({ status }) => {
-        if (status === 200) {
-          this.setEmailSendSuccess();
+    this.setEmailLoginPending();
+    AuthAPI.loginViaEmail(this.state.emailInput, this.state.passwordInput)
+      .then(res => {
+        if (res.status === 200) {
+          this.onEmailLoginSuccess(res);
         } else {
-          this.setEmailSendFailed();
+          this.setEmailLoginFailed();
         }
       })
       .catch(this.setEmailSendFailed);
@@ -66,9 +72,9 @@ class EmailLogin extends Component {
   render() {
     const {
       emailInput,
+      passwordInput,
       emailSendFailed,
       emailSendPending,
-      emailSendSuccess,
     } = this.state;
 
     return (
@@ -76,18 +82,14 @@ class EmailLogin extends Component {
         <Header />
         <main id="main-content" className="with-header">
           <div className="constrain-width">
-            {!emailSendSuccess &&
-              <form onSubmit={this.onSubmitEmail}>
-                <label>Email</label>
-                <input type="text" value={emailInput} placeholder="email" onChange={this.onUpdateEmail} />
-                <button type="submit" onClick={this.onSubmitEmail}>Go</button>
-                {emailSendPending && <div>Sending email...</div>}
-                {emailSendFailed && <div>We could not send the email</div>}
-              </form>
-            }
-            {emailSendSuccess &&
-              <div>We sent an email to {emailInput} with a nice login button!</div>
-            }
+            <form onSubmit={this.onSubmitEmail}>
+              <label>Email</label>
+              <input type="text" value={emailInput} placeholder="email" onChange={this.onUpdateEmail} />
+              <input type="password" value={passwordInput} onChange={this.onUpdatePassword} />
+              <button type="submit" onClick={this.onSubmitEmail}>Go</button>
+              {emailSendPending && <div>Logging you in...</div>}
+              {emailSendFailed && <div>We could not send the email</div>}
+            </form>
           </div>
         </main>
       </div>
@@ -95,4 +97,14 @@ class EmailLogin extends Component {
   }
 }
 
-export default EmailLogin;
+
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = dispatch => ({
+  dispatcher: {
+    setToken: (token) => dispatch(AuthActions.setToken({ token })),
+  }
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(EmailLogin);

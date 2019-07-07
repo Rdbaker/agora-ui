@@ -12,6 +12,7 @@ module.exports = {
     compress: true,
     inline: true,
     port: 3200,
+    disableHostCheck: true,
     index: path.join(__dirname, '..', 'public', 'index.html'),
     historyApiFallback: true,
   },

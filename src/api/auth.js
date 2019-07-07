@@ -3,33 +3,24 @@ import { getToken } from 'utils/auth';
 
 
 export const AuthAPI = {
-  sendLoginEmail(email) {
-    return fetch(`${API_URL}/auth/email/send`, {
+  loginViaEmail(email, password) {
+    return fetch(`${API_URL}/api/sessions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `bearer ${getToken()}`,
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ user: { email, password }}),
     })
   },
-  verifyEmailLogin(token) {
-    return fetch(`${API_URL}/auth/email/verify`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `bearer ${getToken()}`,
-      },
-      body: JSON.stringify({ token_string: token }),
-    })
-  },
+
   getMe() {
-    return fetch(`${API_URL}/users/me`, {
+    return fetch(`${API_URL}/api/users/me`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `bearer ${getToken()}`,
+        'Authorization': `Bearer ${getToken()}`,
       },
     })
   },
+
 }
