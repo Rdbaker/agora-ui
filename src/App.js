@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter, Route } from 'react-router-dom';
+import cx from 'classnames';
 
 import { AuthAPI } from 'api/auth';
 import { CurrentUser } from 'utils/contexts';
-import { EmailLogin, VerifyEmail, WeaslLogin } from 'views/login';
+import { EmailLogin } from 'views/login';
+import Sidebar from 'components/Sidebar';
 import { DEBUG } from 'constants/resources';
 import { setMe } from 'modules/auth/actions';
+import { fetchOrg } from 'modules/org/actions';
 
 import Home from './views/home';
 import AccountHome from './views/account';
@@ -50,6 +53,7 @@ class App extends Component {
       fetchMePending: false,
     });
     this.props.dispatcher.setMe({ user: data });
+    this.props.dispatcher.fetchOrg();
   }
 
   getMeFailed = async () => {
@@ -118,14 +122,13 @@ class App extends Component {
 
     return (
       <BrowserRouter>
-        <div className="App">
+        <Sidebar />
+        <div className={cx("agora-app-content--container", { 'no-sidebar': !currentUser })}>
           <CurrentUser.Provider value={currentUser}>
-            <Route exact={true} path="/" render={Home} />
+            <Route exact={true} path="/" render={this.makeLoginRequiredComponent(Home)} />
             <Route path="/home" render={this.makeLoginRequiredComponent(Home)} />
             <Route path="/login" component={EmailLogin}/>
             <Route path="/account" render={this.makeLoginRequiredComponent(AccountHome)} />
-            <Route path="/verify-token/:token" render={() => <VerifyEmail checkLogin={this.checkLogin} />} />
-            <Route path="/verify" render={() => <WeaslLogin checkLogin={this.checkLogin} />} />
           </CurrentUser.Provider>
         </div>
       </BrowserRouter>
@@ -138,6 +141,7 @@ const mapStateToProps = () => ({});
 const mapDispatchToProps = dispatch => ({
   dispatcher: {
     setMe: (payload) => dispatch(setMe(payload)),
+    fetchOrg: () => dispatch(fetchOrg()),
   }
 });
 

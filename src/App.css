@@ -15,3 +15,11 @@ body {
 .bx--form__helper-text {
   max-height: none !important; /* suck it */
 }
+
+.agora-app-content--container.no-sidebar {
+  margin-left: 0px;
+}
+
+.agora-app-content--container {
+  margin-left: 60px;
+}

@@ -26,11 +26,11 @@ export const OrgsAPI = {
   },
 
   getMyOrg() {
-    return fetch(`${API_URL}/orgs/me`, {
+    return fetch(`${API_URL}/api/orgs/me`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `bearer ${getToken()}`,
+        'Authorization': `Bearer ${getToken()}`,
       },
     })
   },

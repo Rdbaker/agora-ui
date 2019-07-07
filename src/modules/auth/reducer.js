@@ -23,7 +23,7 @@ const setMe = (newState, payload) => {
 
 
 const reducer = (state = defaultState, action) => {
-  switch(action.payload) {
+  switch(action.type) {
     case ActionTypes.SET_TOKEN:
       return produce(state, draftState => setToken(draftState, action.payload));
     case ActionTypes.SET_ME:
