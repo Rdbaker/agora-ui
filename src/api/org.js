@@ -3,25 +3,14 @@ import { getToken } from 'utils/auth';
 
 
 export const OrgsAPI = {
-  updateThemeProperty(name, value, type='STRING') {
-    return fetch(`${API_URL}/orgs/theme/${name}`, {
+  updateSettingProperty(name, value, type='string') {
+    return fetch(`${API_URL}/api/org_properties`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `bearer ${getToken()}`,
+        'Authorization': `Bearer ${getToken()}`,
       },
-      body: JSON.stringify({ value, type }),
-    })
-  },
-
-  updateSettingProperty(name, value, type='STRING') {
-    return fetch(`${API_URL}/orgs/settings/${name}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `bearer ${getToken()}`,
-      },
-      body: JSON.stringify({ value, type }),
+      body: JSON.stringify({ value, type, name }),
     })
   },
 
@@ -40,7 +29,7 @@ export const OrgsAPI = {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `bearer ${getToken()}`,
+        'Authorization': `Bearer ${getToken()}`,
       },
       body: JSON.stringify({
         value: enabled,

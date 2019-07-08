@@ -12,7 +12,7 @@ import { setMe } from 'modules/auth/actions';
 import { fetchOrg } from 'modules/org/actions';
 
 import Home from './views/home';
-import AccountHome from './views/account';
+import Settings from './views/account/settings';
 import './App.css';
 
 
@@ -84,7 +84,7 @@ class App extends Component {
       }
     }();
     drift.SNIPPET_VERSION = '0.3.1';
-    drift.load('2b7p8yk2aw3x');
+    drift.load('5dpn3ruah7x2');
   }
 
   makeLoginRequiredComponent(AuthedComponent) {
@@ -128,7 +128,7 @@ class App extends Component {
             <Route exact={true} path="/" render={this.makeLoginRequiredComponent(Home)} />
             <Route path="/home" render={this.makeLoginRequiredComponent(Home)} />
             <Route path="/login" component={EmailLogin}/>
-            <Route path="/account" render={this.makeLoginRequiredComponent(AccountHome)} />
+            <Route path="/settings" render={this.makeLoginRequiredComponent(Settings)} />
           </CurrentUser.Provider>
         </div>
       </BrowserRouter>
