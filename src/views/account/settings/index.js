@@ -25,10 +25,6 @@ class AccountSettings extends Component {
     };
   }
 
-  componentDidMount() {
-    this.doFetchMyOrg();
-  }
-
   doFetchMyOrg = async () => {
     const response = await OrgsAPI.getMyOrg();
     const { data } = await response.json();

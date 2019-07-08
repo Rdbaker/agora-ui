@@ -29,6 +29,7 @@
   align-content: center;
   justify-content: center;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .agora-sidebar-link svg.svg-inline--fa {

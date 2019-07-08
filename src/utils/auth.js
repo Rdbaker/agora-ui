@@ -1,7 +1,12 @@
 const COOKIE_NAME = 'AGORA_ADMIN_AUTH';
 
 export const expireToken = () => {
-  document.cookie = `${COOKIE_NAME}=;expires=${(new Date()).toUTCString()};`;
+  document.cookie = `${COOKIE_NAME}=;expires=${(new Date()).toUTCString()};path=/;domain=${document.domain}`;
+  try {
+    return localStorage.removeItem(COOKIE_NAME);
+  } catch (err) {
+    return null;
+  }
 };
 
 export const getToken = () => {

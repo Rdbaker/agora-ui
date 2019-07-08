@@ -13,6 +13,16 @@ export const AuthAPI = {
     })
   },
 
+  signupViaEmail(email, password) {
+    return fetch(`${API_URL}/api/users`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user: { email, password }}),
+    })
+  },
+
   getMe() {
     return fetch(`${API_URL}/api/users/me`, {
       method: 'GET',

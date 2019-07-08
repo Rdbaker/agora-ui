@@ -10,6 +10,7 @@
 
 body {
   background-color: #f4f7fb;
+  color: var(--color-blue-6);
 }
 
 .bx--form__helper-text {

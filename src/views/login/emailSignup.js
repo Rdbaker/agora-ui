@@ -12,7 +12,7 @@ import './style.css';
 const goToChat = () => global.location = '/chat';
 
 
-class EmailLogin extends Component {
+class EmailSignup extends Component {
 
   constructor(props) {
     super(props);
@@ -20,29 +20,29 @@ class EmailLogin extends Component {
     this.state = {
       emailInput: '',
       passwordInput: '',
-      emailLoginPending: false,
-      emailLoginFailed: false,
+      emailSignUpPending: false,
+      emailSignUpFailed: false,
     };
   }
 
-  setEmailLoginPending = () => {
+  setEmailSignUpPending = () => {
     this.setState({
-      emailLoginPending: true,
-      emailLoginFailed: false,
+      emailSignUpPending: true,
+      emailSignUpFailed: false,
     });
   }
 
-  onEmailLoginSuccess = async (res) => {
+  onEmailSignUpSuccess = async (res) => {
     const { token } = await res.json();
     this.props.dispatcher.setToken(token);
     setToken(token);
     setTimeout(goToChat, 200);
   }
 
-  setEmailLoginFailed = () => {
+  setEmailSignUpFailed = () => {
     this.setState({
-      emailLoginFailed: true,
-      emailLoginPending: false,
+      emailSignUpFailed: true,
+      emailSignUpPending: false,
     });
   }
 
@@ -60,13 +60,13 @@ class EmailLogin extends Component {
 
   onSubmitEmail = async (e) => {
     e.preventDefault();
-    this.setEmailLoginPending();
-    AuthAPI.loginViaEmail(this.state.emailInput, this.state.passwordInput)
+    this.setEmailSignUpPending();
+    AuthAPI.signupViaEmail(this.state.emailInput, this.state.passwordInput)
       .then(res => {
         if (res.status === 200) {
-          this.onEmailLoginSuccess(res);
+          this.onEmailSignUpSuccess(res);
         } else {
-          this.setEmailLoginFailed();
+          this.setEmailSignUpFailed();
         }
       })
       .catch(this.setEmailSendFailed);
@@ -85,7 +85,7 @@ class EmailLogin extends Component {
         <main id="main-content" className="with-header">
           <div className="agora-auth-form--background" style={{ backgroundImage: `url(${authBackgroundSrc})` }}></div>
           <div className="agora-auth-form">
-            <h2>Login</h2>
+            <h2>Signup</h2>
             <form onSubmit={this.onSubmitEmail}>
               <div>
                 <label htmlFor="email">Email</label>
@@ -99,11 +99,11 @@ class EmailLogin extends Component {
               <div>
                 <button type="submit" onClick={this.onSubmitEmail}>Go</button>
               </div>
-              {emailSendPending && <div>Logging you in...</div>}
+              {emailSendPending && <div>Creating your account...</div>}
               {emailSendFailed && <div>We could not send the email</div>}
             </form>
             <div>
-              or <Link to="/signup">create a new account</Link>
+              or <Link to="/login">login to your account</Link>
             </div>
           </div>
         </main>
@@ -122,4 +122,4 @@ const mapDispatchToProps = dispatch => ({
 });
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailLogin);
+export default connect(mapStateToProps, mapDispatchToProps)(EmailSignup);

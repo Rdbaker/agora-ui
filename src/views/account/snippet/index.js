@@ -53,7 +53,7 @@ class AccountSnippet extends Component {
     return (
       <div>
         <P>
-            To add Agora to your app, copy the snippet of code below and paste it where you would like to manage authentication. You can then use Weasl's API to authenticate users!
+            To add Agora to your app, copy the snippet of code below and paste it where you would like to have community chat.
         </P>
         {!clientId &&
           <div>Loading your snippet</div>

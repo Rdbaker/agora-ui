@@ -5,7 +5,7 @@ import cx from 'classnames';
 
 import { AuthAPI } from 'api/auth';
 import { CurrentUser } from 'utils/contexts';
-import { EmailLogin } from 'views/login';
+import { EmailLogin, EmailSignup } from 'views/login';
 import Sidebar from 'components/Sidebar';
 import { DEBUG } from 'constants/resources';
 import { setMe } from 'modules/auth/actions';
@@ -128,6 +128,7 @@ class App extends Component {
             <Route exact={true} path="/" render={this.makeLoginRequiredComponent(Home)} />
             <Route path="/home" render={this.makeLoginRequiredComponent(Home)} />
             <Route path="/login" component={EmailLogin}/>
+            <Route path="/signup" component={EmailSignup}/>
             <Route path="/settings" render={this.makeLoginRequiredComponent(Settings)} />
           </CurrentUser.Provider>
         </div>
