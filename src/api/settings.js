@@ -8,7 +8,7 @@ export const SettingsAPI = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `bearer ${getToken()}`,
+        'Authorization': `Bearer ${getToken()}`,
       },
       body: JSON.stringify({
         value,

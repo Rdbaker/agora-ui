@@ -1,14 +1,21 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOut, faMicrophoneAlt, faUsersCog } from '@fortawesome/pro-regular-svg-icons';
+import { expireToken } from 'utils/auth';
 
 import './style.css';
 
+const signOut = (history) => {
+  expireToken();
+  history.push('/');
+};
+
 const Sidebar = ({
   isLoggedIn,
+  history
 }) => {
   if (!isLoggedIn) return null;
 
@@ -20,7 +27,7 @@ const Sidebar = ({
       <NavLink to="/settings" activeClassName="active" className="agora-sidebar-link agora-sidebar-settings-button">
         <FontAwesomeIcon icon={faUsersCog} className="agora-sidebar-button--icon" />
       </NavLink>
-      <div className="agora-sidebar-link agora-sidebar-sign-out-button">
+      <div className="agora-sidebar-link agora-sidebar-sign-out-button" onClick={() => signOut(history)}>
         <FontAwesomeIcon icon={faSignOut} className="agora-sidebar-button--icon" />
       </div>
     </div>
@@ -32,4 +39,4 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps)(Sidebar);
+export default connect(mapStateToProps)(withRouter(Sidebar));

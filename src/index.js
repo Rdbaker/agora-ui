@@ -6,8 +6,12 @@ import { createEpicMiddleware, combineEpics } from 'redux-observable';
 
 import authReducer from 'modules/auth/reducer';
 import orgReducer from 'modules/org/reducer';
+import userReducer from 'modules/user/reducer';
+import messageReducer from 'modules/messages/reducer';
 import orgEpic from 'modules/org/epic';
+import userEpic from 'modules/user/epic';
 import socketEpic from 'modules/socket/epic';
+import messageEpic from 'modules/messages/epic';
 import { DEBUG } from 'constants/resources';
 
 import './index.css';
@@ -31,11 +35,13 @@ const store = createStore(
   combineReducers({
     auth: authReducer,
     org: orgReducer,
+    user: userReducer,
+    messages: messageReducer,
   }),
   compose(
     applyMiddleware(loggingMiddleware),
     applyMiddleware(epicMiddleware),
-    // DEBUG && typeof window.__REDUX_DEVTOOLS_EXTENSION__ === 'function' && window.__REDUX_DEVTOOLS_EXTENSION__(),
+    DEBUG && typeof window.__REDUX_DEVTOOLS_EXTENSION__ === 'function' && window.__REDUX_DEVTOOLS_EXTENSION__(),
   ),
 );
 
@@ -43,6 +49,8 @@ epicMiddleware.run(
   combineEpics(
     orgEpic,
     socketEpic,
+    userEpic,
+    messageEpic,
   )
 )
 

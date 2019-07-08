@@ -1,33 +1,17 @@
 import { API_URL } from 'constants/resources';
 import { getToken } from 'utils/auth';
+import { checkStatus } from 'utils/api';
 
 
 export const EndUsersAPI = {
-  getEndUsers(page=1, perPage=10) {
-    return fetch(`${API_URL}/end_users?page=${page}&per_page=${perPage}`, {
+  bulkGet(ids) {
+    return fetch(`${API_URL}/api/end_users?${ids.map(id => `ids[]=${id}&`).join('')}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `bearer ${getToken()}`,
+        'Authorization': `Bearer ${getToken()}`,
       },
     })
-  },
-  getEndUsersSMSLogins(page=1, perPage=10) {
-    return fetch(`${API_URL}/end_users/sms-logins?page=${page}&per_page=${perPage}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `bearer ${getToken()}`,
-      },
-    })
-  },
-  getEndUsersEmailLogins(page=1, perPage=10) {
-    return fetch(`${API_URL}/end_users/email-logins?page=${page}&per_page=${perPage}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `bearer ${getToken()}`,
-      },
-    })
-  },
+    .then(checkStatus)
+  }
 }

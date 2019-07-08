@@ -28,6 +28,7 @@
   display: flex;
   align-content: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .agora-sidebar-link svg.svg-inline--fa {
