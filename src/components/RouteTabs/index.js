@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { Route, withRouter } from 'react-router-dom';
+
+import './style.css';
 
 class RouteTabs extends Component {
   constructor(props) {
@@ -8,23 +9,30 @@ class RouteTabs extends Component {
   }
 
   render() {
-    var activeTab = 0;
-    var route = this.context.router.route.location.pathname;
-    for (var i = 0; i < this.props.tabs.length; i++) {
-      if (route.indexOf(this.props.tabs[i].route) >= 0) {
+    let activeTab = 0;
+    const route = this.props.location.pathname;
+    this.props.tabs.forEach((tab, i) => {
+      if(route.indexOf(tab.route) >= 0) {
         activeTab = i;
       }
-    }
+    })
 
     return (
       <div>
+        <Route render={({history}) => (
+          <div className="route-tabs--container">
+            {this.props.tabs.map((tab, i) => (
+              <div
+                className={`route-tabs--tab ${i === activeTab ? 'active': ''}`}
+                key={tab.label}
+                onClick={() => history.push(tab.route)}
+              >{tab.label}</div>
+            ))}
+          </div>
+        )} />
       </div>
     );
   }
 }
 
-RouteTabs.contextTypes = {
-  router: PropTypes.object
-};
-
-export default RouteTabs;
+export default withRouter(RouteTabs);

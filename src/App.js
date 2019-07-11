@@ -12,7 +12,7 @@ import { setMe } from 'modules/auth/actions';
 import { fetchOrg } from 'modules/org/actions';
 
 import Home from './views/home';
-import Settings from './views/account/settings';
+import Account from './views/account';
 import './App.css';
 
 
@@ -129,7 +129,7 @@ class App extends Component {
             <Route path="/home" render={this.makeLoginRequiredComponent(Home)} />
             <Route path="/login" component={EmailLogin}/>
             <Route path="/signup" component={EmailSignup}/>
-            <Route path="/settings" render={this.makeLoginRequiredComponent(Settings)} />
+            <Route path="/settings" render={this.makeLoginRequiredComponent(Account)} />
           </CurrentUser.Provider>
         </div>
       </BrowserRouter>

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import Header from '../../components/Header';
 import RouteTabs from '../../components/RouteTabs';
 import AccountSettings from './settings';
 import AccountSnippet from './snippet';
@@ -21,8 +20,8 @@ class AccountHome extends Component {
 
   render() {
     var tabs = [
-      { label: "Settings", route: "/account" },
-      { label: "Snippet", route: "/account/snippet" }
+      { label: "Settings", route: "/settings" },
+      { label: "Snippet", route: "/settings/snippet" }
     ];
 
     const currentUser = this.props.currentUser;
@@ -32,29 +31,27 @@ class AccountHome extends Component {
 
     return (
       <div>
-        <Header />
-        <main id='main-content' className="with-header">
-          <RouteTabs tabs={tabs} />
-          <div className="constrain-width">
+        <h2>Settings</h2>
+        <RouteTabs tabs={tabs} />
+        <div className="constrain-width">
+          <div>
+            <Route exact={true} path='/settings' render={() => (
               <div>
-                <Route exact={true} path='/account' render={() => (
-                  <div>
-                    <AccountSettings />
-                  </div>
-                )}/>
-                <Route exact={true} path='/account/snippet' render={() => (
-                  <div>
-                    <AccountSnippet />
-                  </div>
-                )}/>
-                <Route exact={true} path='/account/admin' render={() => (
-                  <div>
-                    <Admin />
-                  </div>
-                )}/>
+                <AccountSettings />
               </div>
+            )}/>
+            <Route exact={true} path='/settings/snippet' render={() => (
+              <div>
+                <AccountSnippet />
+              </div>
+            )}/>
+            <Route exact={true} path='/settings/admin' render={() => (
+              <div>
+                <Admin />
+              </div>
+            )}/>
           </div>
-        </main>
+        </div>
       </div>
     );
   }

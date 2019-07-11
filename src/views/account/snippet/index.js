@@ -52,18 +52,18 @@ class AccountSnippet extends Component {
 
     return (
       <div>
-        <P>
+        <p>
             To add Agora to your app, copy the snippet of code below and paste it where you would like to have community chat.
-        </P>
+        </p>
         {!clientId &&
           <div>Loading your snippet</div>
         }
         {clientId &&
-          <div className="wsl-snippet" type="multi" onClick={this.copySnippet}>
+          <div className="agora-snippet" type="multi" onClick={this.copySnippet}>
             {getSnippet(clientId)}
           </div>
         }
-        <textarea id="weasl-snippet" className="wsl-snippet-textarea" ref={elt => this.textArea = elt} defaultValue={getSnippet(clientId)} />
+        <textarea className="agora-snippet-textarea" ref={elt => this.textArea = elt} value={getSnippet(clientId)} />
       </div>
     );
   }

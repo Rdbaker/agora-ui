@@ -11,7 +11,7 @@ const getNamespacedPropertyValue = (orgData, name, namespace) => {
 }
 
 const hasGate = (orgData, gateName) => getNamespacedPropertyValue(orgData, gateName, 'OrgPropertyNamespaces.GATES');
-const getSettingValue = (orgData, settingName) => getNamespacedPropertyValue(orgData, settingName, 'OrgPropertyNamespaces.SETTINGS');
+const getSettingValue = (orgData, settingName) => getNamespacedPropertyValue(orgData, settingName, 'SETTINGS');
 const getThemeValue = (orgData, themeName) => getNamespacedPropertyValue(orgData, themeName, 'OrgPropertyNamespaces.THEME');
 
 
@@ -25,19 +25,16 @@ class AccountSettings extends Component {
     };
   }
 
+  componentDidMount() {
+    this.doFetchMyOrg();
+  }
+
   doFetchMyOrg = async () => {
     const response = await OrgsAPI.getMyOrg();
     const { data } = await response.json();
     this.setState({
       orgData: data,
-      appName: getThemeValue(data, 'company_name'),
-      textLoginMessage: getThemeValue(data, 'text_login_message'),
-      emailMagiclink: getThemeValue(data, 'email_magiclink'),
-      smsLoginEnabled: !getThemeValue(data, 'sms_login_disabled'),
-      hasSocialLogin: hasGate(data,'has_social_login'),
-      googleLoginEnabled: getThemeValue(data, 'google_login_enabled'),
-      googleClientId: getSettingValue(data, 'google_client_id'),
-      allowedDomains: getSettingValue(data, 'allowed_domains') || [],
+      chatButtonColor: getSettingValue(data, 'chatButtonColor'),
       updateFailed: false,
       updateSuccess: false,
     });
@@ -45,26 +42,11 @@ class AccountSettings extends Component {
 
   doSave = async () => {
     const {
-      appName,
-      textLoginMessage,
-      emailMagiclink,
-      smsLoginEnabled,
-      googleLoginEnabled,
-      hasSocialLogin,
-      googleClientId,
-      allowedDomains = [],
+      chatButtonColor,
     } = this.state;
 
     try {
-      OrgsAPI.updateThemeProperty('company_name', appName);
-      OrgsAPI.updateThemeProperty('text_login_message', textLoginMessage);
-      OrgsAPI.updateThemeProperty('email_magiclink', emailMagiclink);
-      OrgsAPI.updateThemeProperty('sms_login_disabled', !smsLoginEnabled, 'BOOLEAN');
-      if (hasSocialLogin) {
-        OrgsAPI.updateThemeProperty('google_login_enabled', googleLoginEnabled, 'BOOLEAN');
-        OrgsAPI.updateSettingProperty('google_client_id', googleClientId);
-      }
-      OrgsAPI.updateSettingProperty('allowed_domains', JSON.stringify(allowedDomains), 'JSON');
+      OrgsAPI.updateThemeProperty('chatButtonColor', chatButtonColor);
       this.setState({
         updateFailed: false,
         updateSuccess: true,
@@ -129,28 +111,22 @@ class AccountSettings extends Component {
   render() {
     const {
       orgData,
-      appName,
-      textLoginMessage,
-      emailMagiclink,
       updateFailed,
       updateSuccess,
-      smsLoginEnabled = true,
-      hasSocialLogin,
-      googleLoginEnabled,
-      googleClientId,
-      allowedDomainInput,
+      chatButtonColor = 'blue',
     } = this.state;
 
     return (
       <div className="account-settings-form-container">
         <p>
-            Welcome to your settings! Here you can update information related to your Weasl profile.
+            Welcome to your settings! Here you can update information related to your Agora chat.
         </p>
         {!!orgData &&
           <div>
             {updateFailed && <div className="form-notification-update-failed">The update failed</div>}
             {updateSuccess && <div className="form-notification-update-success">Update successful!</div>}
             <form className="wsl-form" onSubmit={this.onSubmit}>
+              <input value={chatButtonColor} />
               <button type="submit" onClick={this.onSubmit}>Save</button>
             </form>
           </div>
