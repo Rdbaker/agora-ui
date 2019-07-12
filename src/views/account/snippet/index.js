@@ -4,7 +4,7 @@ import { OrgsAPI } from 'api/org';
 
 import './style.css';
 
-const getSnippet = (clientId) => (`(function(window, document) {
+export const getSnippet = (clientId) => (`(function(window, document) {
   if (window.agora) console.error('Agora embed already included');
   window.agora = {}, m = ['init', 'getCurrentUser', 'debug']; window.agora._c = [];
   m.forEach(me => window.agora[me] = function() {window.agora._c.push([me, arguments])});
@@ -59,9 +59,9 @@ class AccountSnippet extends Component {
           <div>Loading your snippet</div>
         }
         {clientId &&
-          <div className="agora-snippet" type="multi" onClick={this.copySnippet}>
+          <pre className="agora-snippet" type="multi" onClick={this.copySnippet}>
             {getSnippet(clientId)}
-          </div>
+          </pre>
         }
         <textarea className="agora-snippet-textarea" ref={elt => this.textArea = elt} value={getSnippet(clientId)} />
       </div>

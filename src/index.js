@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { createEpicMiddleware, combineEpics } from 'redux-observable';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 import authReducer from 'modules/auth/reducer';
 import orgReducer from 'modules/org/reducer';
@@ -23,6 +24,7 @@ const mountSentry = () => {
   global.Sentry && global.Sentry.init && global.Sentry.init({ dsn: 'https://67698d7a1cfa4f29a27404a96e425273@sentry.io/1383604' });
 };
 setTimeout(mountSentry, 0);
+const compose = composeWithDevTools({ trace: true, traceLimit: 25 });
 
 const loggingMiddleware = () => next => action => {
   if (DEBUG) {
@@ -41,7 +43,6 @@ const store = createStore(
   compose(
     applyMiddleware(loggingMiddleware),
     applyMiddleware(epicMiddleware),
-    // DEBUG && typeof window.__REDUX_DEVTOOLS_EXTENSION__ === 'function' && window.__REDUX_DEVTOOLS_EXTENSION__(),
   ),
 );
 

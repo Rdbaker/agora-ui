@@ -23,4 +23,6 @@ body {
 
 .agora-app-content--container {
   margin-left: 60px;
+  max-height: 100vh;
+  overflow: auto;
 }

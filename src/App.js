@@ -11,6 +11,8 @@ import { DEBUG } from 'constants/resources';
 import { setMe } from 'modules/auth/actions';
 import { fetchOrg } from 'modules/org/actions';
 
+import ChatView from './views/chat';
+import Onboard from './views/onboard';
 import Home from './views/home';
 import Account from './views/account';
 import './App.css';
@@ -125,7 +127,8 @@ class App extends Component {
         <Sidebar />
         <div className={cx("agora-app-content--container", { 'no-sidebar': !currentUser })}>
           <CurrentUser.Provider value={currentUser}>
-            <Route exact={true} path="/" render={this.makeLoginRequiredComponent(Home)} />
+            <Route exact={true} path="/" render={this.makeLoginRequiredComponent(Onboard)} />
+            <Route path="/chat" render={this.makeLoginRequiredComponent(ChatView)} />
             <Route path="/home" render={this.makeLoginRequiredComponent(Home)} />
             <Route path="/login" component={EmailLogin}/>
             <Route path="/signup" component={EmailSignup}/>
