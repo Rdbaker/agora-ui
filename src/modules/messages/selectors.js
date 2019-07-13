@@ -26,7 +26,8 @@ const shouldCreateNewGroup = (lastMessage, currentMessage) => {
 }
 
 
-export const getMessageGroups = (state, conversationId) => {
+export const getMessageGroups = (state, requestedConvoId) => {
+  const conversationId = requestedConvoId ? requestedConvoId : Object.keys(byConversationIdRoot(state))[0];
   const unorderedMessages = conversationMessageIds(state, conversationId).map(id => getMessage(state, id));
   const orderedMessages = sortBy(prop('created_at'), unorderedMessages);
 
