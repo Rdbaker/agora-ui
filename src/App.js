@@ -7,7 +7,7 @@ import { AuthAPI } from 'api/auth';
 import { CurrentUser } from 'utils/contexts';
 import { EmailLogin, EmailSignup } from 'views/login';
 import Sidebar from 'components/Sidebar';
-import { DEBUG } from 'constants/resources';
+import { AGORA_ON_AGORA_CLIENT_ID, SHIM_URL } from 'constants/resources';
 import { setMe } from 'modules/auth/actions';
 import { fetchOrg } from 'modules/org/actions';
 
@@ -29,9 +29,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    if (!DEBUG) {
-      this.mountDrift();
-    }
+    this.mountAgora();
     this.fetchMe();
   }
 
@@ -64,29 +62,20 @@ class App extends Component {
     });
   }
 
-  mountDrift = () => {
-    !function() {
-      var t = window.driftt = window.drift = window.driftt || [];
-      if (!t.init) {
-        if (t.invoked) return void (window.console && console.error && console.error("Drift snippet included twice."));
-        t.invoked = !0, t.methods = [ "identify", "config", "track", "reset", "debug", "show", "ping", "page", "hide", "off", "on" ],
-        t.factory = function(e) {
-          return function() {
-            var n = Array.prototype.slice.call(arguments);
-            return n.unshift(e), t.push(n), t;
-          };
-        }, t.methods.forEach(function(e) {
-          t[e] = t.factory(e);
-        }), t.load = function(t) {
-          var e = 3e5, n = Math.ceil(new Date() / e) * e, o = document.createElement("script");
-          o.type = "text/javascript", o.async = !0, o.crossorigin = "anonymous", o.src = "https://js.driftt.com/include/" + n + "/" + t + ".js";
-          var i = document.getElementsByTagName("script")[0];
-          i.parentNode.insertBefore(o, i);
-        };
-      }
-    }();
-    drift.SNIPPET_VERSION = '0.3.1';
-    drift.load('5dpn3ruah7x2');
+  mountAgora = () => {
+    (function(window, document) {
+      if (window.agora) console.error('Agora embed already included');
+      window.agora = {};
+      const m = ['init', 'getCurrentUser', 'debug'];
+      window.agora._c = [];
+      m.forEach(me => window.agora[me] = function() {window.agora._c.push([me, arguments])});
+      const elt = document.createElement('script');
+      elt.type = "text/javascript"; elt.async = true;
+      elt.src = SHIM_URL;
+      const before = document.getElementsByTagName('script')[0];
+      before.parentNode.insertBefore(elt, before);
+    })(window, document, undefined);
+    agora.init(AGORA_ON_AGORA_CLIENT_ID);
   }
 
   makeLoginRequiredComponent(AuthedComponent) {
