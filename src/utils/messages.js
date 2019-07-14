@@ -8,8 +8,6 @@ export const createBeforeServerMessage = ({
   conversation_id: conversationId,
   event,
   user_context: {
-    userAgent: navigator.userAgent,
-    languages: navigator.languages,
     ...extraUserContext,
     ...user_context,
   },
