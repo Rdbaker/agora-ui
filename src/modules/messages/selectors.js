@@ -6,6 +6,7 @@ const root = state => state.messages
 const byConversationIdRoot = state => root(state).idsByConversationId
 const byIdRoot = state => root(state).byId
 
+export const firstConversationId = state => Object.keys(byConversationIdRoot(state))[0]
 export const messagesNeverFetched = (state, conversationId) => !byConversationIdRoot(state)[conversationId]
 export const messagesFetchPending = (state, conversationId) => (byConversationIdRoot(state)[conversationId] || {}).status === ActionTypes.FETCH_MESSAGES_PENDING;
 export const conversationMessageIds = (state, conversationId) => [...(byConversationIdRoot(state)[conversationId] || { data: new Set()}).data]
@@ -26,8 +27,7 @@ const shouldCreateNewGroup = (lastMessage, currentMessage) => {
 }
 
 
-export const getMessageGroups = (state, requestedConvoId) => {
-  const conversationId = requestedConvoId ? requestedConvoId : Object.keys(byConversationIdRoot(state))[0];
+export const getMessageGroups = (state, conversationId) => {
   const unorderedMessages = conversationMessageIds(state, conversationId).map(id => getMessage(state, id));
   const orderedMessages = sortBy(prop('created_at'), unorderedMessages);
 

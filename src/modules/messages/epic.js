@@ -1,5 +1,5 @@
 import { ofType, combineEpics } from 'redux-observable';
-import { flatMap, startWith, catchError, pluck, mergeMap } from 'rxjs/operators';
+import { flatMap, startWith, catchError, pluck, mergeMap, map } from 'rxjs/operators';
 import { of, from } from 'rxjs';
 import { path } from 'ramda';
 
@@ -7,6 +7,7 @@ import { ActionTypes as OrgActionTypes } from 'modules/org/constants';
 import { MessagesAPI } from 'api/messages';
 import * as MessageActions from './actions';
 import { ActionTypes } from './constants';
+import { createBeforeServerMessage } from 'utils/messages';
 
 
 const fetchOrgToFetchMessages = action$ => action$.pipe(
@@ -32,6 +33,7 @@ const fetchMessagesEpic = action$ => action$.pipe(
 const sendMessage = (action$, store$) => action$.pipe(
   ofType(ActionTypes.SEND_MESSAGE),
   pluck('payload'),
+  map(createBeforeServerMessage),
   flatMap((message) =>
     from(MessagesAPI.sendMessage(message.conversation_id, message, path(['auth', 'jwt', 'data'], store$.value)))
       .pipe(
